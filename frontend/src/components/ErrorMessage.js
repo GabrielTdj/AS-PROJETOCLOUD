@@ -1,0 +1,19 @@
+import React from 'react';
+import './ErrorMessage.css';
+
+function ErrorMessage({ message, onRetry }) {
+  return (
+    <div className="error-container">
+      <div className="error-icon">⚠️</div>
+      <h3 className="error-title">Ops! Algo deu errado</h3>
+      <p className="error-message">{message}</p>
+      {onRetry && (
+        <button className="error-button" onClick={onRetry}>
+          Tentar Novamente
+        </button>
+      )}
+    </div>
+  );
+}
+
+export default ErrorMessage;

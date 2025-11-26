@@ -1,0 +1,36 @@
+.galeria-container {
+  width: 100%;
+}
+
+.galeria-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 30px;
+  padding: 20px 0;
+}
+
+.galeria-vazia {
+  text-align: center;
+  padding: 60px 20px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.galeria-vazia p {
+  font-size: 1.2em;
+  color: #666;
+}
+
+@media (max-width: 768px) {
+  .galeria-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .galeria-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
