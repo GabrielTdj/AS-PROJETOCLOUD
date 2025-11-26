@@ -6,8 +6,6 @@ import Header from './components/Header';
 import Loading from './components/Loading';
 import ErrorMessage from './components/ErrorMessage';
 
-// Configurar a URL da API
-// Em produção, usar variável de ambiente
 const API_URL = process.env.REACT_APP_API_URL || 'https://SEU_FUNCTION_APP.azurewebsites.net/api';
 
 function App() {
@@ -28,8 +26,6 @@ function App() {
     try {
       const response = await axios.get(`${API_URL}/obras`);
       setObras(response.data);
-      
-      // Extrair estilos únicos
       const estilosUnicos = [...new Set(response.data.map(obra => obra.estilo))];
       setEstilos(estilosUnicos);
       

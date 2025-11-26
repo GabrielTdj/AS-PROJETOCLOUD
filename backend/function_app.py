@@ -4,14 +4,11 @@ import json
 import os
 import psycopg2
 from psycopg2.extras import RealDictCursor
-from typing import List, Dict
+from typing import Dict
 
 app = func.FunctionApp(http_auth_level=func.AuthLevel.ANONYMOUS)
 
 def get_db_connection():
-    """
-    Cria conexão com o banco PostgreSQL usando variáveis de ambiente.
-    """
     try:
         connection = psycopg2.connect(
             host=os.environ.get('POSTGRES_HOST'),
@@ -28,9 +25,6 @@ def get_db_connection():
         raise
 
 def format_obra(obra: Dict) -> Dict:
-    """
-    Formata os dados da obra para o formato JSON da API.
-    """
     return {
         'id': obra['id'],
         'nome': obra['nome'],
@@ -43,19 +37,12 @@ def format_obra(obra: Dict) -> Dict:
 
 @app.route(route="obras", methods=["GET"])
 def listar_obras(req: func.HttpRequest) -> func.HttpResponse:
-    """
-    Endpoint principal: retorna lista de todas as obras da galeria.
-    
-    GET /api/obras
-    """
     logging.info('Processando requisição para listar obras')
     
     try:
-        # Conectar ao banco
         connection = get_db_connection()
         
         with connection.cursor() as cursor:
-            # Buscar todas as obras
             sql = """
                 SELECT 
                     id, nome, artista, descricao, 
@@ -67,10 +54,7 @@ def listar_obras(req: func.HttpRequest) -> func.HttpResponse:
             obras = cursor.fetchall()
         
         connection.close()
-        
-        # Formatar resposta
         obras_formatadas = [format_obra(obra) for obra in obras]
-        
         logging.info(f'Retornando {len(obras_formatadas)} obras')
         
         return func.HttpResponse(
@@ -97,11 +81,6 @@ def listar_obras(req: func.HttpRequest) -> func.HttpResponse:
 
 @app.route(route="obras/{id:int}", methods=["GET"])
 def obter_obra(req: func.HttpRequest) -> func.HttpResponse:
-    """
-    Endpoint para obter uma obra específica por ID.
-    
-    GET /api/obras/{id}
-    """
     obra_id = req.route_params.get('id')
     logging.info(f'Buscando obra com ID: {obra_id}')
     
@@ -149,11 +128,6 @@ def obter_obra(req: func.HttpRequest) -> func.HttpResponse:
 
 @app.route(route="obras/artista/{artista}", methods=["GET"])
 def obras_por_artista(req: func.HttpRequest) -> func.HttpResponse:
-    """
-    Endpoint para buscar obras por artista.
-    
-    GET /api/obras/artista/{artista}
-    """
     artista = req.route_params.get('artista')
     logging.info(f'Buscando obras do artista: {artista}')
     
@@ -173,7 +147,6 @@ def obras_por_artista(req: func.HttpRequest) -> func.HttpResponse:
             obras = cursor.fetchall()
         
         connection.close()
-        
         obras_formatadas = [format_obra(obra) for obra in obras]
         
         return func.HttpResponse(
@@ -196,11 +169,6 @@ def obras_por_artista(req: func.HttpRequest) -> func.HttpResponse:
 
 @app.route(route="obras/estilo/{estilo}", methods=["GET"])
 def obras_por_estilo(req: func.HttpRequest) -> func.HttpResponse:
-    """
-    Endpoint para buscar obras por estilo artístico.
-    
-    GET /api/obras/estilo/{estilo}
-    """
     estilo = req.route_params.get('estilo')
     logging.info(f'Buscando obras do estilo: {estilo}')
     
@@ -220,7 +188,6 @@ def obras_por_estilo(req: func.HttpRequest) -> func.HttpResponse:
             obras = cursor.fetchall()
         
         connection.close()
-        
         obras_formatadas = [format_obra(obra) for obra in obras]
         
         return func.HttpResponse(
@@ -243,11 +210,6 @@ def obras_por_estilo(req: func.HttpRequest) -> func.HttpResponse:
 
 @app.route(route="health", methods=["GET"])
 def health_check(req: func.HttpRequest) -> func.HttpResponse:
-    """
-    Endpoint de health check para verificar status da API e conexão com banco.
-    
-    GET /api/health
-    """
     logging.info('Health check requisitado')
     
     status = {
@@ -257,7 +219,6 @@ def health_check(req: func.HttpRequest) -> func.HttpResponse:
     }
     
     try:
-        # Testar conexão com banco
         connection = get_db_connection()
         with connection.cursor() as cursor:
             cursor.execute("SELECT 1")
