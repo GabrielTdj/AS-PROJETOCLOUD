@@ -1,4 +1,4 @@
-name: Deploy Backend - Azure Function
+name: Deploy Backend
 
 on:
   push:
@@ -6,40 +6,40 @@ on:
       - main
     paths:
       - 'backend/**'
-      - '.github/workflows/backend-deploy.yml'
+      - '.github/workflows/deploy-backend.yml'
   workflow_dispatch:
 
 env:
-  AZURE_FUNCTIONAPP_NAME: 'func-galeria-artes'  # Substitua pelo nome da sua Function App
+  AZURE_FUNCTIONAPP_NAME: 'func-galeria-5678'
   AZURE_FUNCTIONAPP_PACKAGE_PATH: 'backend'
-  PYTHON_VERSION: '3.9'
+  PYTHON_VERSION: '3.11'
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     
     steps:
-    - name: 📥 Checkout código
+    - name: Checkout código
       uses: actions/checkout@v4
 
-    - name: 🐍 Configurar Python ${{ env.PYTHON_VERSION }}
+    - name: Configurar Python ${{ env.PYTHON_VERSION }}
       uses: actions/setup-python@v4
       with:
         python-version: ${{ env.PYTHON_VERSION }}
 
-    - name: 📦 Criar e ativar ambiente virtual
+    - name: Criar e ativar ambiente virtual
       run: |
         cd ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
         python -m venv venv
         source venv/bin/activate
 
-    - name: 📚 Instalar dependências
+    - name: Instalar dependências
       run: |
         cd ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
         python -m pip install --upgrade pip
         pip install -r requirements.txt --target=".python_packages/lib/site-packages"
 
-    - name: 🚀 Deploy para Azure Functions
+    - name: Deploy para Azure Functions
       uses: Azure/functions-action@v1
       with:
         app-name: ${{ env.AZURE_FUNCTIONAPP_NAME }}
@@ -47,12 +47,3 @@ jobs:
         publish-profile: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE }}
         scm-do-build-during-deployment: true
         enable-oryx-build: true
-
-    - name: ✅ Deploy concluído
-      run: |
-        echo "✅ Deploy do backend concluído com sucesso!"
-        echo "🔗 URL: https://${{ env.AZURE_FUNCTIONAPP_NAME }}.azurewebsites.net"
-        echo "📋 Endpoints disponíveis:"
-        echo "   - GET /api/obras"
-        echo "   - GET /api/obras/{id}"
-        echo "   - GET /api/health"
