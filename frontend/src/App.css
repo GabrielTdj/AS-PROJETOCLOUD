@@ -47,17 +47,17 @@
 }
 
 .filtro-select:hover {
-  border-color: #667eea;
+  border-color: #34495e;
 }
 
 .filtro-select:focus {
   outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  border-color: #34495e;
+  box-shadow: 0 0 0 3px rgba(52, 73, 94, 0.1);
 }
 
 .info-contador {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #34495e;
   color: white;
   padding: 10px 20px;
   border-radius: 20px;
